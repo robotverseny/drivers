@@ -1,0 +1,32 @@
+# ROS2 build and install directories
+/build/
+/install/
+/log/
+
+# ROS2 workspace files
+.colcon/
+CMakeLists.txt.user
+
+# ROS2 package files
+ament_cmake_environment_hooks/
+ament_cmake_index/
+ament_cmake_package_templates/
+ament_cmake_test/
+ament_cmake_uncrustify/
+ament_cmake_version/
+ament_cmake_lint_cmake/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Miscellaneous
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# VS Code
+.vscode/
