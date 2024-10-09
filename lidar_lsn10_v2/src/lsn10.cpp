@@ -46,7 +46,7 @@ LSN10::LSN10():rclcpp::Node ("n10lidar")
   this->declare_parameter<std::string>("laser", "laser");
   this->get_parameter<std::string>("laser", frame_id_);
 
-  this->declare_parameter<std::string>("serial_port", "/dev/wheeltec_laser");
+  this->declare_parameter<std::string>("serial_port", "/dev/wheeltec_laser"); // /dev/ttyAMA10
   this->get_parameter<std::string>("serial_port", serial_port_);
 
   this->declare_parameter<int>("baud_rate", 230400);
@@ -63,6 +63,8 @@ LSN10::LSN10():rclcpp::Node ("n10lidar")
 
   this->declare_parameter<float>("angle_disable_max", 0);
   this->get_parameter<float>("angle_disable_max", angle_disable_max);
+
+  RCLCPP_INFO_STREAM(get_logger(), "serial_port: " << serial_port_ << " baud_rate: " << baud_rate_ << " min_range: " << min_range << " max_range: " << max_range << " angle_disable_min: " << angle_disable_min << " angle_disable_max: " << angle_disable_max);
 
   count_sum = 0;
   while(angle_disable_min<0)

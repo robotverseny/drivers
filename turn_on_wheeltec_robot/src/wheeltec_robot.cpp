@@ -466,7 +466,7 @@ turn_on_robot::turn_on_robot()
   imu_publisher = create_publisher<sensor_msgs::msg::Imu>("mobile_base/sensors/imu_data", 10);    // CHANGE
   //imu_timer = create_wall_timer(1s/100, [=]() { Publish_ImuSensor(); });
 
-  voltage_publisher = create_publisher<std_msgs::msg::Float32>("PowerVoltage", 1);
+  voltage_publisher = create_publisher<std_msgs::msg::Float32>("power_voltage", 1);
   //voltage_timer = create_wall_timer(1s/100, [=]() { Publish_Voltage(); });    
   //tf_pub_ = this->create_publisher<tf2_msgs::msg::TFMessage>("tf", 10);
   robotpose_publisher = create_publisher<wheeltec_robot_msg::msg::Data>("robotpose", 10);

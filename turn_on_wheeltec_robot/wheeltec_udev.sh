@@ -7,4 +7,7 @@ service udev reload
 sleep 2
 service udev restart
 
-
+sleep 2
+udevadm control --reload-rules
+sleep 2
+udevadm trigger

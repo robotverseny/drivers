@@ -21,7 +21,7 @@ import launch_ros.actions
 
 def generate_launch_description():
     frequency = LaunchConfiguration('frequency', default='5.5')
-    serial_port_ = LaunchConfiguration('port', default='/dev/ttyUSB1')
+    serial_port_ = LaunchConfiguration('port', default='/dev/not_working_yet') # default port is /dev/wheeltec_laser
     baud_rate_ = LaunchConfiguration('baud_rate_', default='230400')
     frame_id_ = LaunchConfiguration('frame_id', default='laser')
     scan_topic = LaunchConfiguration('scan_topic', default='scan')
@@ -58,6 +58,7 @@ def generate_launch_description():
         launch_ros.actions.Node(
             package='lsn10',
             executable='lsn10',
+            output='screen',
             parameters=[{'serial_port_': serial_port_, 
                          'baud_rate_': baud_rate_, 
                          'frame_id_': frame_id_,
