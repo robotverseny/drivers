@@ -1,14 +1,14 @@
-/*************************************************************************************
-@company: Copyright (C) 2021, Leishen Intelligent System, WHEELTEC (Dongguan) Co., Ltd
-@product: LSn10
+/*******************************************************
+@company: Copyright (C) 2022, Leishen Intelligent System
+@product: LSM10 and N10
 @filename: lsiosr.cpp
 @brief:
-@version:       date:       author:            comments:
-@v2.0           22-4-12      yao,Tues          ROS2
-*************************************************************************************/
-#include "lsn10/lsiosr.h"
+@version:       date:       author:     comments:
+@v1.0           21-2-4      yao          new
+*******************************************************/
+#include "lslidar_driver/lsiosr.h"
 
-namespace ls {
+namespace lslidar_driver {
 
 LSIOSR * LSIOSR::instance(std::string name, int speed, int fd)
 {
@@ -69,22 +69,6 @@ int LSIOSR::setOpt(int nBits, uint8_t nEvent, int nStop)
   /*设置波特率*/
   switch (baud_rate_)
   {
-  case 2400:
-    cfsetispeed(&newtio, B2400);
-    cfsetospeed(&newtio, B2400);
-    break;
-  case 4800:
-    cfsetispeed(&newtio, B4800);
-    cfsetospeed(&newtio, B4800);
-    break;
-  case 9600:
-    cfsetispeed(&newtio, B9600);
-    cfsetospeed(&newtio, B9600);
-    break;
-  case 115200:
-    cfsetispeed(&newtio, B115200);
-    cfsetospeed(&newtio, B115200);
-    break;
   case 230400:
     cfsetispeed(&newtio, B230400);
     cfsetospeed(&newtio, B230400);
@@ -93,9 +77,17 @@ int LSIOSR::setOpt(int nBits, uint8_t nEvent, int nStop)
     cfsetispeed(&newtio, B460800);
     cfsetospeed(&newtio, B460800);
     break;
+  case 500000:
+    cfsetispeed(&newtio, B500000);
+    cfsetospeed(&newtio, B500000);
+    break;
+  case 921600:
+    cfsetispeed(&newtio, B921600);
+    cfsetospeed(&newtio, B921600);
+    break;
   default:
-    cfsetispeed(&newtio, B9600);
-    cfsetospeed(&newtio, B9600);
+    cfsetispeed(&newtio, B460800);
+    cfsetospeed(&newtio, B460800);
     break;
   }
 
@@ -152,7 +144,14 @@ int LSIOSR::read(unsigned char *buffer, int length, int timeout)
 
       if (rc > 0)
       {		
-          return rc;
+        length -= rc;
+        pb += rc;
+        totalBytesRead += rc;
+
+        if (length == 0)
+        {
+          break;
+        }
       }
       else if (rc < 0)
       {
@@ -376,9 +375,7 @@ int LSIOSR::init()
 	else
 	{
 		error_code = -1;
-		//printf("open_port %s ERROR !\n", port_.c_str());
 	}
-	//printf("LSn10::Init\n");
 
 	return error_code;
 }
@@ -386,6 +383,7 @@ int LSIOSR::init()
 int LSIOSR::close()
 {
   ::close(fd_);
+  return 0;
 }
 
 std::string LSIOSR::getPort()

@@ -28,13 +28,22 @@ def generate_launch_description():
                 'akm_cmd_vel': 'ackermann_cmd',
                 'product_number': 0,}],
             remappings=[('/cmd_vel', 'cmd_vel'),]),
-        # EEEEEEEE
-        # launch_ros.actions.Node(
-        #     condition=IfCondition(akmcar),
-        #     package='turn_on_wheeltec_robot', 
-        #     executable='cmd_vel_to_ackermann_drive.py',  ## this is a python script, different 
-        #     name='cmd_vel_to_ackermann_drive',
-        #     output='screen'),
+        launch_ros.actions.Node(
+            condition=IfCondition(akmcar),
+            package='turn_on_wheeltec_robot', 
+            executable='cmd_vel_to_ackermann',  ## this used to be a python script, now c++ 
+            name='cmd_vel_to_ackermann_drive',
+            output='screen'),
+        launch_ros.actions.Node(
+            condition=IfCondition(akmcar),
+            package='turn_on_wheeltec_robot', 
+            executable='joy_to_cmd', 
+            parameters=[{
+                'joy_topic': 'joy',
+                'cmd_vel_topic': 'cmd_vel',
+            }],
+            output='screen'
+            ),
 #the default mode is not akm
         launch_ros.actions.Node(
             condition=UnlessCondition(akmcar),

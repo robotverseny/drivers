@@ -66,14 +66,22 @@ ament_target_dependencies(wheeltec_robot_node tf2_ros tf2 tf2_geometry_msgs rclc
 add_executable(parameter_node src/cpp_parameters_node.cpp)
 ament_target_dependencies(parameter_node rclcpp)
 
+add_executable(cmd_vel_to_ackermann src/cmd_vel_to_ackermann.cpp)
+ament_target_dependencies(cmd_vel_to_ackermann rclcpp std_msgs geometry_msgs ackermann_msgs)
+
+add_executable(joy_to_cmd src/joy_to_cmd.cpp)
+ament_target_dependencies(joy_to_cmd rclcpp std_msgs sensor_msgs geometry_msgs)
+
 #add_executable(testNode src/test.cpp src/Quaternion_Solution.cpp)
 #ament_target_dependencies(testNode rclcpp std_msgs nav_msgs std_srvs sensor_msgs ackermann_msgs serial wheeltec_robot_msg)
 
-install(PROGRAMS scripts/cmd_vel_to_ackermann_drive.py DESTINATION lib/${PROJECT_NAME})
+# install(PROGRAMS scripts/cmd_vel_to_ackermann_drive.py DESTINATION lib/${PROJECT_NAME}) ## C++ file instead of python file
 
 install(TARGETS
 wheeltec_robot_node
 parameter_node
+cmd_vel_to_ackermann
+joy_to_cmd
 
 DESTINATION lib/${PROJECT_NAME}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

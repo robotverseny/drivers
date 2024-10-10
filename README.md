@@ -22,8 +22,10 @@ git clone https://github.com/robotverseny/drivers
 sudo apt update
 ```
 
+`lslidar_driver` needs `libpcap0.8-dev`, not `libpcap-dev`.
+
 ```r
-sudo apt install libpcap-dev libboost-all-dev ros-jazzy-nav2-msgs ros-jazzy-ackermann-msgs ros-jazzy-tf2-msgs ros-jazzy-tf2-geometry-msgs ros-jazzy-joint-state-publisher ros-jazzy-robot-localization ros-jazzy-usb-cam ros-jazzy-foxglove*
+sudo apt install libpcap0.8-dev libpcl-dev libboost-all-dev ros-jazzy-nav2-msgs ros-jazzy-ackermann-msgs ros-jazzy-tf2-msgs ros-jazzy-tf2-geometry-msgs ros-jazzy-joint-state-publisher ros-jazzy-robot-localization ros-jazzy-usb-cam ros-jazzy-foxglove*
 ```
 ```r
 cd ~/ros2_ws
@@ -40,8 +42,9 @@ rosdep update
 cd ~/ros2_ws
 ```
 ```r
-colcon build --symlink-install --packages-select wheeltec_robot_msg lsn10 usb_cam turn_on_wheeltec_robot wheeltec_robot_urdf
+colcon build --symlink-install --packages-select serial wheeltec_robot_msg lslidar_msgs lslidar_driver turn_on_wheeltec_robot wheeltec_robot_urdf 
 ```
+Package `usb_cam` and `wheeltec_py_package` do not built with this command. (further work is needed TODO)
 
 <details>
 <summary> Don't forget to source before ROS commands.</summary>
@@ -96,16 +99,27 @@ Bus 005 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
 ```
 
 ```r
-ros2 run lsn10 lsn10 --ros-args -r serial_port:=/dev/wheeltec_laser -r baud_rate:=230400
-```
-```r
-ros2 launch lsn10 ls_n10.launch.py 
+ros2 launch lslidar_driver lslidar_launch.py
 ```
 ```r
 sudo nano /etc/udev/rules.d/usb.rules
 ```
 ```r
-KERNELS=="1-1.2:1.0", MODE:="0777", GROUP:="dialout",SYMLINK+="wheeltec_laser"
+sudo su
+
+echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60",ATTRS{serial}=="0002", MODE:="0777", GROUP:="dialout", SYMLINK+="wheeltec_controller"' >/etc/udev/rules.d/wheeltec_controller.rules
+echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60",ATTRS{serial}=="0001", MODE:="0777", GROUP:="dialout", SYMLINK+="wheeltec_laser"' >/etc/udev/rules.d/rplidar_laser.rules
+echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60",ATTRS{serial}=="0003", MODE:="0777", GROUP:="dialout", SYMLINK+="wheeltec_laser"' >/etc/udev/rules.d/ld14.rules
+echo  'KERNEL=="ttyCH343USB*", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d4",ATTRS{serial}=="0002", MODE:="0777", GROUP:="dialout", SYMLINK+="wheeltec_controller"' >/etc/udev/rules.d/wheeltec_wheeltec.rules
+
+service udev reload
+sleep 2
+service udev restart
+
+sleep 2
+udevadm control --reload-rules
+sleep 2
+udevadm trigger
 ```
 ```r
 sudo udevadm control --reload-rules && sudo udevadm trigger
@@ -120,6 +134,32 @@ sudo chmod +x wheeltec_udev.sh
 ```r
 ./wheeltec_udev.sh
 ```
+
+## Copy robags (mcap)
+
+```r
+rsync -avzh --progress wheeltec@192.168.0.100:/home/wheeltec/bag/my_record1 /mnt/c/bag/
+```
+
+## Topic list
+
+TODO: Update the list (this only the first version)
+
+| Topic                       | Hz      | Msg Type                                      |
+|-----------------------------|---------|-----------------------------------------------|
+| `/ackermann_cmd`              | 0.06    | `ackermann_msgs/msg/AckermannDriveStamped`      |
+| `/cmd_vel`                    | 0.06    | `geometry_msgs/msg/Twist`                       |
+| `/scan`                       | 10.0    | `sensor_msgs/msg/LaserScan`                     |
+| `/lslidar_point_cloud`        | 10.0    | `sensor_msgs/msg/PointCloud2`                   |
+| `/robotvel`                   | 20.01   | `wheeltec_robot_msg/msg/Data`                   |
+| `/robotpose`                  | 20.01   | `wheeltec_robot_msg/msg/Data`                   |
+| `/mobile_base/sensors/imu_data`| 19.61  | `sensor_msgs/msg/Imu`                           |
+| `/power_voltage`              | 1.63    | `std_msgs/msg/Float32`                          |
+| `/odom_combined`              | 39.24   | `nav_msgs/msg/Odometry`                         |
+| `/robot_description`          | N/A     | `std_msgs/msg/String`                           |
+| `/tf`                         | 29.65   | `tf2_msgs/msg/TFMessage`                        |
+| `/tf_static`                  | 0.10    | `tf2_msgs/msg/TFMessage`                        |
+| `/joint_states`               | 10.00   | `sensor_msgs/msg/JointState`                    |
 
 
 ## Links

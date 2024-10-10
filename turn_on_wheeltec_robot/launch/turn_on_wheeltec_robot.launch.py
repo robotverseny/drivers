@@ -4,8 +4,7 @@ import launch
 from launch.actions import SetEnvironmentVariable
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import (DeclareLaunchArgument, GroupAction,
-                            IncludeLaunchDescription, SetEnvironmentVariable)
+from launch.actions import (DeclareLaunchArgument, GroupAction, IncludeLaunchDescription, SetEnvironmentVariable)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import PushRosNamespace
@@ -15,7 +14,9 @@ from launch.conditions import UnlessCondition
 def generate_launch_description():
     # Get the launch directory
     bringup_dir = get_package_share_directory('turn_on_wheeltec_robot')
+    lidar_dir = get_package_share_directory('lslidar_driver')
     launch_dir = os.path.join(bringup_dir, 'launch')
+    lidar_luanch_dir = os.path.join(lidar_dir, 'launch')
     ekf_config = Path(get_package_share_directory('turn_on_wheeltec_robot'), 'config', 'ekf.yaml')
 
     
@@ -30,7 +31,10 @@ def generate_launch_description():
     choose_car = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(launch_dir, 'robot_mode_description.launch.py')),
     )
-
+    # lidar driver (lslidar N10)
+    lslidar_driver = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(os.path.join(lidar_luanch_dir, 'lslidar_launch.py')),
+    )
     
     base_to_link = launch_ros.actions.Node(
             package='tf2_ros', 
@@ -59,6 +63,23 @@ def generate_launch_description():
             name='joint_state_publisher',
     )
 
+    foxglove = launch_ros.actions.Node(
+        package='foxglove_bridge',
+        executable='foxglove_bridge',
+        parameters=[
+            {'port': 8765},
+            {'address': '0.0.0.0'},
+            {'tls': False},
+            {'certfile': ''},
+            {'keyfile': ''},
+            #{'topic_whitelist': "'.*'"},
+            {'max_qos_depth': 10},
+            {'num_threads': 0},
+            {'use_sim_time': False},
+        ]
+    )
+
+
     ld = LaunchDescription()
 
     ld.add_action(carto_slam_dec)
@@ -68,6 +89,8 @@ def generate_launch_description():
     ld.add_action(joint_state_publisher_node)
     ld.add_action(choose_car)
     ld.add_action(robot_ekf)
+    ld.add_action(lslidar_driver)
+    ld.add_action(foxglove)
 
     return ld
 
