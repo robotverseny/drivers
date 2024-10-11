@@ -4,6 +4,16 @@ Wheeltec Roboworks drivers
 
 ROS 2 packages  [![Static Badge](https://img.shields.io/badge/ROS_2-Jazzy-34aec5)](https://docs.ros.org/en/jazzy/)
 
+## SSH
+
+```r
+ssh wheeltec@192.168.0.100
+```
+password: `dongguan`
+
+SSH no password: https://github.com/szenergy/szenergy-public-resources/wiki/H-SSH-no-password
+
+
 ## Packages and build
 
 It is assumed that the workspace is `~/ros2_ws/`.
@@ -98,9 +108,7 @@ Bus 004 Device 007: ID 2bc5:060e Orbbec 3D Technology International, Inc ORBBEC 
 Bus 005 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
 ```
 
-```r
-ros2 launch lslidar_driver lslidar_launch.py
-```
+
 ```r
 sudo nano /etc/udev/rules.d/usb.rules
 ```
@@ -122,6 +130,14 @@ sleep 2
 udevadm trigger
 ```
 ```r
+ls /dev/wh*
+```
+Result:
+```r
+/dev/wheeltec_controller  /dev/wheeltec_laser
+```
+
+```r
 sudo udevadm control --reload-rules && sudo udevadm trigger
 ```
 
@@ -134,6 +150,17 @@ sudo chmod +x wheeltec_udev.sh
 ```r
 ./wheeltec_udev.sh
 ```
+
+## Run the driver
+
+```r
+ros2 launch lslidar_driver lslidar_launch.py
+```
+
+```r
+ros2 launch turn_on_wheeltec_robot turn_on_wheeltec_robot.launch.py 
+```
+
 
 ## Copy robags (mcap)
 

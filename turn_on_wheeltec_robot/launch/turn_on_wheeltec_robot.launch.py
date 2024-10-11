@@ -63,6 +63,23 @@ def generate_launch_description():
             name='joint_state_publisher',
     )
 
+    joy_translater_node =launch_ros.actions.Node(
+            #     condition=IfCondition(akmcar),
+            package='turn_on_wheeltec_robot', 
+            executable='joy_to_cmd', 
+            parameters=[{
+                'joy_topic': 'joy',
+                'cmd_vel_topic': 'cmd_vel',
+            }],
+                output='screen'
+            
+    )
+
+    joy_node = launch_ros.actions.Node(
+            package='joy', 
+            executable='joy_node', 
+    )
+
     foxglove = launch_ros.actions.Node(
         package='foxglove_bridge',
         executable='foxglove_bridge',
@@ -91,6 +108,8 @@ def generate_launch_description():
     ld.add_action(robot_ekf)
     ld.add_action(lslidar_driver)
     ld.add_action(foxglove)
+#     ld.add_action(joy_translater_node) ## TODO: fix ackermann cmd and cmd_vel issue
+#     ld.add_action(joy_node)
 
     return ld
 

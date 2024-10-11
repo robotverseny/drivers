@@ -32,18 +32,9 @@ def generate_launch_description():
             condition=IfCondition(akmcar),
             package='turn_on_wheeltec_robot', 
             executable='cmd_vel_to_ackermann',  ## this used to be a python script, now c++ 
-            name='cmd_vel_to_ackermann_drive',
-            output='screen'),
-        launch_ros.actions.Node(
-            condition=IfCondition(akmcar),
-            package='turn_on_wheeltec_robot', 
-            executable='joy_to_cmd', 
             parameters=[{
-                'joy_topic': 'joy',
-                'cmd_vel_topic': 'cmd_vel',
-            }],
-            output='screen'
-            ),
+                 'wheelbase': 0.3187,}],
+            output='screen'),
 #the default mode is not akm
         launch_ros.actions.Node(
             condition=UnlessCondition(akmcar),
