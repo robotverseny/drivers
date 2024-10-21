@@ -5,7 +5,7 @@
 class DummyLaserScannerNode : public rclcpp::Node {
 public:
     DummyLaserScannerNode() : Node("random_laser_scanner_node") {
-		this->declare_parameter<std::string>("frame_id", "laser_link");
+		this->declare_parameter<std::string>("frame_id", "laser");
 		this->declare_parameter<std::string>("scan_topic", "/scan");
 
 		this->get_parameter("frame_id", frame_id);
