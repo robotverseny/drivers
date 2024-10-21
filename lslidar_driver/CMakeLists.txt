@@ -42,11 +42,18 @@ target_link_libraries(lslidar_driver_node ${rclcpp_LIBRARIES} ${libpcap_LIBRARIE
 ament_target_dependencies(lslidar_driver_node rclcpp std_msgs lslidar_msgs sensor_msgs diagnostic_updater pcl_conversions)
 
 
+add_executable(dummy_lidar_pub src/dummy_lidar_pub.cc)
+target_link_libraries(dummy_lidar_pub ${rclcpp_LIBRARIES})
+ament_target_dependencies(dummy_lidar_pub rclcpp std_msgs sensor_msgs)
+
+
+
 install(DIRECTORY launch params rviz
 		DESTINATION share/${PROJECT_NAME})
 
 install(TARGETS
   lslidar_driver_node
+  dummy_lidar_pub
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -6,8 +6,10 @@ ROS 2 packages  [![Static Badge](https://img.shields.io/badge/ROS_2-Jazzy-34aec5
 
 ## SSH
 
+IP can be from `192.168.101` to `192.168.104` look at [https://github.com/robotverseny/fyi](https://github.com/robotverseny/fyi?tab=readme-ov-file#robot-n%C3%A9v-%C3%A9s-sz%C3%ADn--robot-name-and-color)
+
 ```r
-ssh wheeltec@192.168.0.100
+ssh wheeltec@192.168.0.101
 ```
 password: `dongguan`
 
