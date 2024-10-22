@@ -70,6 +70,7 @@ def generate_launch_description():
             parameters=[{
                 'joy_topic': 'joy',
                 'cmd_vel_topic': 'cmd_vel',
+                'max_angular_vel': 0.22,
             }],
                 output='screen'
             
@@ -108,8 +109,8 @@ def generate_launch_description():
     ld.add_action(robot_ekf)
     ld.add_action(lslidar_driver)
     ld.add_action(foxglove)
-#     ld.add_action(joy_translater_node) ## TODO: fix ackermann cmd and cmd_vel issue
-#     ld.add_action(joy_node)
+    ld.add_action(joy_translater_node) ## TODO: fix ackermann cmd and cmd_vel issue
+    ld.add_action(joy_node)
 
     return ld
 

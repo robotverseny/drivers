@@ -15,7 +15,7 @@ public:
         this->declare_parameter<std::string>("joy_topic", "joy");
         this->declare_parameter<std::string>("cmd_vel_topic", "cmd_vel");
         this->declare_parameter<double>("max_linear_vel", 1.5);
-        this->declare_parameter<double>("max_angular_vel", 0.0008);
+        this->declare_parameter<double>("max_angular_vel", 0.1);
         this->get_parameter("joy_topic", joy_topic_);
         this->get_parameter("cmd_vel_topic", cmd_vel_topic_);
         this->get_parameter("max_linear_vel", max_linear_vel_);

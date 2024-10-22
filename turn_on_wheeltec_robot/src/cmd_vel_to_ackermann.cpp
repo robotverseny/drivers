@@ -15,14 +15,17 @@ public:
         this->declare_parameter<std::string>("ackermann_cmd_topic", "/ackermann_cmd");
         this->declare_parameter<std::string>("frame_id", "odom_combined");
         this->declare_parameter<double>("wheelbase", 0.3187);
+        this->declare_parameter<bool>("cmd_angle_instead_rotvel", true);
         this->get_parameter("cmd_vel_topic", cmd_vel_topic_);
         this->get_parameter("ackermann_cmd_topic", ackermann_cmd_topic_);
         this->get_parameter("frame_id", frame_id_);
         this->get_parameter("wheelbase", wheelbase_);
+        this->get_parameter("cmd_angle_instead_rotvel", cmd_angle_instead_rotvel_);
+        
 
         //frame_id_ = "odom_combined";
         //wheelbase_ = 0.3187;  // meters wheeltec roboworks rosbot mini
-        cmd_angle_instead_rotvel_ = false; //
+        //cmd_angle_instead_rotvel_ = false; //
 
         publisher_ = this->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(ackermann_cmd_topic_, 10);
         subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(cmd_vel_topic_, 10, std::bind(&CmdVelToAckermannDrive::cmd_callback, this, _1));
@@ -35,7 +38,6 @@ public:
 private:
     void cmd_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
     {
-        double v = msg->linear.x;
         double steering;
 
         if (cmd_angle_instead_rotvel_)
@@ -44,15 +46,16 @@ private:
         }
         else
         {
-            steering = convert_trans_rot_vel_to_steering_angle(v, msg->angular.z, wheelbase_);
+            steering = convert_trans_rot_vel_to_steering_angle(msg->linear.x, msg->angular.z, wheelbase_);
+            RCLCPP_INFO_STREAM(this->get_logger(), "Rotvel");
         }
 
-        RCLCPP_INFO_ONCE(this->get_logger(), "ackermann msg: steering %.2f, speed %.2f", steering, v);
+        RCLCPP_INFO_ONCE(this->get_logger(), "ackermann msg: steering %.2f, speed %.2f", steering, msg->linear.x);
 
         ackermann_msg.header.stamp = this->get_clock()->now();
         ackermann_msg.header.frame_id = frame_id_;
-        ackermann_msg.drive.steering_angle = steering;
-        ackermann_msg.drive.speed = v;
+        ackermann_msg.drive.steering_angle = (float)steering;
+        ackermann_msg.drive.speed = (float)msg->linear.x;
         if(steering > 0.00000001 || steering < -0.00000001)
         {
             ackermann_msg.drive.steering_angle_velocity = 0.5;
@@ -86,7 +89,7 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
     ackermann_msgs::msg::AckermannDriveStamped ackermann_msg;
     double wheelbase_ = 0.3187;
-    bool cmd_angle_instead_rotvel_;
+    bool cmd_angle_instead_rotvel_ = true;
 };
 
 int main(int argc, char *argv[])
