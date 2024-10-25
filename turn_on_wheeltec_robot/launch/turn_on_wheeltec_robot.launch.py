@@ -15,6 +15,7 @@ def generate_launch_description():
     # Get the launch directory
     bringup_dir = get_package_share_directory('turn_on_wheeltec_robot')
     lidar_dir = get_package_share_directory('lslidar_driver')
+    usb_cam_launcher_dir = get_package_share_directory('usb_cam_launcher')
     launch_dir = os.path.join(bringup_dir, 'launch')
     lidar_luanch_dir = os.path.join(lidar_dir, 'launch')
     ekf_config = Path(get_package_share_directory('turn_on_wheeltec_robot'), 'config', 'ekf.yaml')
@@ -35,7 +36,11 @@ def generate_launch_description():
     lslidar_driver = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(os.path.join(lidar_luanch_dir, 'lslidar_launch.py')),
     )
-    
+
+    cam_driver = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(os.path.join(usb_cam_launcher_dir, 'launch', 'usb_cam_a.launch.py')),
+    )
+
     base_to_link = launch_ros.actions.Node(
             package='tf2_ros', 
             executable='static_transform_publisher', 
@@ -70,7 +75,8 @@ def generate_launch_description():
             parameters=[{
                 'joy_topic': 'joy',
                 'cmd_vel_topic': 'cmd_vel',
-                'max_angular_vel': 0.22,
+                'max_angular_vel': 0.8,
+                'max_linear_vel': 0.5,
             }],
                 output='screen'
             
@@ -108,9 +114,11 @@ def generate_launch_description():
     ld.add_action(choose_car)
     ld.add_action(robot_ekf)
     ld.add_action(lslidar_driver)
+    ld.add_action(cam_driver)
     ld.add_action(foxglove)
     ld.add_action(joy_translater_node) ## TODO: fix ackermann cmd and cmd_vel issue
     ld.add_action(joy_node)
+
 
     return ld
 

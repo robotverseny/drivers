@@ -24,18 +24,18 @@ def generate_launch_description():
                 'serial_baud_rate': 115200,
                 'robot_frame_id': 'base_footprint',
                 'odom_frame_id': 'odom_combined',
-                'cmd_vel': 'cmd_vel_dummy',
-                'akm_cmd_vel': 'ackermann_cmd',
+                'cmd_vel': 'cmd_vel',
+                'akm_cmd_vel': 'none',
                 'product_number': 0,}],
             remappings=[('/cmd_vel', 'cmd_vel'),]),
-        launch_ros.actions.Node(
-            condition=IfCondition(akmcar),
-            package='turn_on_wheeltec_robot', 
-            executable='cmd_vel_to_ackermann',  ## this used to be a python script, now c++ 
-            parameters=[{
-                 'wheelbase': 0.3187,
-            }],
-            output='screen'),
+        # launch_ros.actions.Node(
+        #     condition=IfCondition(akmcar),
+        #     package='turn_on_wheeltec_robot', 
+        #     executable='cmd_vel_to_ackermann',  ## this used to be a python script, now c++ 
+        #     parameters=[{
+        #          'wheelbase': 0.3187,
+        #     }],
+        #     output='screen'),
 #the default mode is not akm
         launch_ros.actions.Node(
             condition=UnlessCondition(akmcar),
@@ -45,7 +45,7 @@ def generate_launch_description():
                 'serial_baud_rate': 115200,
                 'robot_frame_id': 'base_footprint',
                 'odom_frame_id': 'odom_combined',
-                'cmd_vel': 'cmd_vel_dummy',
+                'cmd_vel': 'cmd_vel',
                 'akm_cmd_vel': 'none',
                 'product_number': 0,}],
             )

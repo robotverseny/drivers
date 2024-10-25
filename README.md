@@ -54,9 +54,9 @@ rosdep update
 cd ~/ros2_ws
 ```
 ```r
-colcon build --symlink-install --packages-select serial wheeltec_robot_msg lslidar_msgs lslidar_driver turn_on_wheeltec_robot wheeltec_robot_urdf 
+colcon build --symlink-install --packages-select serial wheeltec_robot_msg lslidar_msgs lslidar_driver turn_on_wheeltec_robot wheeltec_robot_urdf usb_cam_launcher
 ```
-Package `usb_cam` and `wheeltec_py_package` do not built with this command. (further work is needed TODO)
+`wheeltec_py_package` do not built with this command. (further work is needed TODO)
 
 <details>
 <summary> Don't forget to source before ROS commands.</summary>
@@ -155,13 +155,21 @@ sudo chmod +x wheeltec_udev.sh
 
 ## Run the driver
 
+Lidar driver:
 ```r
 ros2 launch lslidar_driver lslidar_launch.py
 ```
 
+Camera driver:
+```r
+ros2 launch usb_cam_launcher usb_cam_a.launch.py
+```
+
+All in one:
 ```r
 ros2 launch turn_on_wheeltec_robot turn_on_wheeltec_robot.launch.py 
 ```
+
 
 
 ## Copy robags (mcap)
@@ -182,7 +190,7 @@ TODO: Update the list (this only the first version)
 | `/lslidar_point_cloud`        | 10.0    | `sensor_msgs/msg/PointCloud2`                   |
 | `/robotvel`                   | 20.01   | `wheeltec_robot_msg/msg/Data`                   |
 | `/robotpose`                  | 20.01   | `wheeltec_robot_msg/msg/Data`                   |
-| `/mobile_base/sensors/imu_data`| 19.61  | `sensor_msgs/msg/Imu`                           |
+| `/imu`                        | 19.61   | `sensor_msgs/msg/Imu`                           |
 | `/power_voltage`              | 1.63    | `std_msgs/msg/Float32`                          |
 | `/odom_combined`              | 39.24   | `nav_msgs/msg/Odometry`                         |
 | `/robot_description`          | N/A     | `std_msgs/msg/String`                           |

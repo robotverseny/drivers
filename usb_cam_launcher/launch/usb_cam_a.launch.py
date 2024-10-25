@@ -50,13 +50,13 @@ def generate_launch_description():
 
     args, unknown = parser.parse_known_args(sys.argv[4:])
 
-    usb_cam_dir = get_package_share_directory('usb_cam')
+    usb_cam_dir = get_package_share_directory('usb_cam_launcher')
 
     # get path to params file
     params_path = os.path.join(
         usb_cam_dir,
         'config',
-        'params.yaml'
+        'params_a.yaml'
     )
 
     node_name = args.node_name
