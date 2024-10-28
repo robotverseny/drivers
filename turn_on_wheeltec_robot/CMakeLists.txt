@@ -25,6 +25,7 @@ find_package(nav_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -35,6 +36,7 @@ find_package(ackermann_msgs REQUIRED)                         # CHANGE
 find_package(wheeltec_robot_msg REQUIRED)                         # CHANGE
 find_package(serial REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -54,6 +56,10 @@ endif()
 
 include_directories(
   include
+  ${rclcpp_INCLUDE_DIRS}
+  ${tf2_INCLUDE_DIRS}
+  ${tf2_geometry_msgs_INCLUDE_DIRS}
+  ${geometry_msgs_INCLUDE_DIRS}
 )
 set(wheeltec_robot_node_SRCS
   src/wheeltec_robot.cpp
@@ -72,6 +78,9 @@ ament_target_dependencies(cmd_vel_to_ackermann rclcpp std_msgs geometry_msgs ack
 add_executable(joy_to_cmd src/joy_to_cmd.cpp)
 ament_target_dependencies(joy_to_cmd rclcpp std_msgs sensor_msgs geometry_msgs)
 
+add_executable(path_and_steering src/path_and_steering.cpp)
+ament_target_dependencies(path_and_steering rclcpp std_msgs sensor_msgs geometry_msgs nav_msgs visualization_msgs tf2 tf2_ros tf2_geometry_msgs) 
+
 #add_executable(testNode src/test.cpp src/Quaternion_Solution.cpp)
 #ament_target_dependencies(testNode rclcpp std_msgs nav_msgs std_srvs sensor_msgs ackermann_msgs serial wheeltec_robot_msg)
 
@@ -82,6 +91,7 @@ wheeltec_robot_node
 parameter_node
 cmd_vel_to_ackermann
 joy_to_cmd
+path_and_steering
 
 DESTINATION lib/${PROJECT_NAME}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

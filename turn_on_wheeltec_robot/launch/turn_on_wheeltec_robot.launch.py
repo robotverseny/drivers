@@ -10,6 +10,8 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import PushRosNamespace
 import launch_ros.actions
 from launch.conditions import UnlessCondition
+from launch.actions import TimerAction
+
 
 def generate_launch_description():
     # Get the launch directory
@@ -39,6 +41,28 @@ def generate_launch_description():
 
     cam_driver = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(os.path.join(usb_cam_launcher_dir, 'launch', 'usb_cam_a.launch.py')),
+    )
+
+    # Steering and path visualization in RViz with TimerAction to delay starting the node by X seconds (period)
+    path_and_steer = TimerAction(
+        period=3.0,
+        actions=[
+            launch_ros.actions.Node(
+            package='turn_on_wheeltec_robot',
+            executable='path_and_steering',
+            output='screen',
+            parameters=[
+                {'publish_steer_marker': True}, 
+                {'marker_topic': 'steer_marker'},
+                {'marker_color': 'g'},
+                {'map_frame': 'odom_combined'},
+                {'marker_frame': 'base_link'},
+                {'pose_frame': 'base_link'},
+                {'cmd_topic': 'cmd_vel'},
+                # {'use_sim_time': False},
+                ]
+            )
+        ]
     )
 
     base_to_link = launch_ros.actions.Node(
@@ -118,6 +142,7 @@ def generate_launch_description():
     ld.add_action(foxglove)
     ld.add_action(joy_translater_node) ## TODO: fix ackermann cmd and cmd_vel issue
     ld.add_action(joy_node)
+    ld.add_action(path_and_steer)
 
 
     return ld

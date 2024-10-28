@@ -187,7 +187,12 @@ void turn_on_robot::Publish_Odom()
 
     tf2::Quaternion q;
     q.setRPY(0,0,Robot_Pos.Z);
-    // geometry_msgs::msg::Quaternion odom_quat=tf2::toMsg(q); /// EEEEE
+    geometry_msgs::msg::Quaternion odom_quat; 
+    odom_quat.x = q.x();
+    odom_quat.y = q.y();
+    odom_quat.z = q.z();
+    odom_quat.w = q.w();
+    /// EEEEE
 
     wheeltec_robot_msg::msg::Data robotpose;
     wheeltec_robot_msg::msg::Data robotvel;
@@ -200,7 +205,7 @@ void turn_on_robot::Publish_Odom()
     odom.pose.pose.position.x = Robot_Pos.X; //Position //位置
     odom.pose.pose.position.y = Robot_Pos.Y;
     odom.pose.pose.position.z = Robot_Pos.Z;
-    // odom.pose.pose.orientation = odom_quat; //Posture, Quaternion converted by Z-axis rotation //姿态，通过Z轴转角转换的四元数
+    odom.pose.pose.orientation = odom_quat; //Posture, Quaternion converted by Z-axis rotation //姿态，通过Z轴转角转换的四元数
     // EEEEEE
 
     odom.twist.twist.linear.x =  Robot_Vel.X; //Speed in the X direction //X方向速度
