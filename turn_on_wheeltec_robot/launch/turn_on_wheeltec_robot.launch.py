@@ -11,6 +11,7 @@ from launch_ros.actions import PushRosNamespace
 import launch_ros.actions
 from launch.conditions import UnlessCondition
 from launch.actions import TimerAction
+from math import pi
 
 
 def generate_launch_description():
@@ -69,13 +70,47 @@ def generate_launch_description():
             package='tf2_ros', 
             executable='static_transform_publisher', 
             name='base_to_link',
-            arguments=['0', '0', '0','0', '0','0','base_footprint','base_link'],
+            arguments=[
+                '--x',     '0.0',
+                '--y',     '0.0',
+                '--z',     '0.0',
+                '--roll',  '0.0',
+                '--pitch', '0.0',
+                '--yaw',   str(pi),
+                '--frame-id',      'base_footprint',
+                '--child-frame-id','base_link'
+            ],
     )
     base_to_gyro = launch_ros.actions.Node(
             package='tf2_ros', 
             executable='static_transform_publisher', 
             name='base_to_gyro',
-            arguments=['0', '0', '0','0', '0','0','base_footprint','gyro_link'],
+            arguments=[
+                '--x',     '0.0',
+                '--y',     '0.0',
+                '--z',     '-0.1',
+                '--roll',  '0.0',
+                '--pitch', '0.0',
+                '--yaw',   '0.0',
+                '--frame-id',      'base_footprint',
+                '--child-frame-id','gyro_link'
+            ],
+    )
+
+    map_to_odom_combined = launch_ros.actions.Node(
+            package='tf2_ros', 
+            executable='static_transform_publisher', 
+            name='map_to_odom_combined',
+            arguments=[
+                '--x',     '0.0',
+                '--y',     '0.0',
+                '--z',     '-0.1',
+                '--roll',  '0.0',
+                '--pitch', '0.0',
+                '--yaw',   '0.0',
+                '--frame-id',      'map',
+                '--child-frame-id','odom_combined'
+            ],
     )
 
     robot_ekf = launch_ros.actions.Node(
@@ -134,13 +169,14 @@ def generate_launch_description():
     ld.add_action(wheeltec_robot)
     ld.add_action(base_to_link)
     ld.add_action(base_to_gyro)
+    ld.add_action(map_to_odom_combined)
     ld.add_action(joint_state_publisher_node)
     ld.add_action(choose_car)
     ld.add_action(robot_ekf)
     ld.add_action(lslidar_driver)
     ld.add_action(cam_driver)
     ld.add_action(foxglove)
-    ld.add_action(joy_translater_node) ## TODO: fix ackermann cmd and cmd_vel issue
+    ld.add_action(joy_translater_node) 
     ld.add_action(joy_node)
     ld.add_action(path_and_steer)
 

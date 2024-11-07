@@ -7,6 +7,8 @@ from launch import LaunchDescription
 from launch.actions import (DeclareLaunchArgument, GroupAction,LogInfo,
                             IncludeLaunchDescription, SetEnvironmentVariable)
 from launch.substitutions import LaunchConfiguration
+from math import pi
+
 
 def generate_launch_description():
 #aaaaaaaaaaaakm
@@ -20,363 +22,443 @@ def generate_launch_description():
             package='tf2_ros', 
             executable='static_transform_publisher', 
             name='base_to_laser',
-            arguments=['0.125 ', '0', '0.1608','3.14', '0','0','base_footprint','laser'],),
+            # arguments=['0.125 ', '0', '0.1608','3.14', '0','0','base_footprint','laser'],
+            arguments=[
+                    '--x',     '0.125',
+                    '--y',     '0.0',
+                    '--z',     '0.1608',
+                    '--roll',  '0.0',
+                    '--pitch', '0.0',
+                    '--yaw',   '0.0',
+                    '--frame-id',       'base_footprint',
+                    '--child-frame-id', 'laser'
+                ],
+            ),
+
         launch_ros.actions.Node(
             package='tf2_ros', 
             executable='static_transform_publisher', 
             name='base_to_camera',
-            arguments=['0.195', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
+            # arguments=['0.195', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
+            arguments=[
+                    '--x',     '0.195',
+                    '--y',     '0.0',
+                    '--z',     '0.25',
+                    '--roll',  '0.0',
+                    '--pitch', '0.0',
+                    '--yaw',   '0.0',
+                    '--frame-id',       'base_footprint',
+                    '--child-frame-id', 'camera_link'
+            ],),
     ])
 
-    senior_akm = GroupAction([
+#     senior_akm = GroupAction([
     
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','senior_akm_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','senior_akm_robot.urdf')],),
             
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.26 ', '0', '0.228','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.34', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
-    ])
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=[
+#                     '--x',     '0.26',
+#                     '--y',     '0.0',
+#                     '--z',     '0.228',
+#                     '--roll',  '0.0',
+#                     '--pitch', '0.0',
+#                     '--yaw',   str(pi),
+#                     '--frame-id',       'base_footprint',
+#                     '--child-frame-id', 'camera_link'
+#         ],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=[
+#                     '--x',     '0.34',
+#                     '--y',     '0.0',
+#                     '--z',     '0.32',
+#                     '--roll',  '0.0',
+#                     '--pitch', '0.0',
+#                     '--yaw',   '0.0',
+#                     '--frame-id',       'base_footprint',
+#                     '--child-frame-id', 'camera_link'
+#         ],),
+#     ])
 
-    top_akm_bs = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_akm_bs_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.53 ', '0', '0.228','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.51', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     top_akm_bs = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_akm_bs_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             # arguments=['0.53 ', '0', '0.228','3.14', '0','0','base_footprint','laser'],),
+#             arguments=[
+#                     '--x',     '0.53',
+#                     '--y',     '0.0',
+#                     '--z',     '0.228',
+#                     '--roll',  '0.0',
+#                     '--pitch', '0.0',
+#                     '--yaw',   '0.0',
+#                     '--frame-id',       'base_footprint',
+#                     '--child-frame-id', 'laser'
+#         ],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             # arguments=['0.51', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
+#             arguments=[
+#                     '--x',     '0.51',
+#                     '--y',     '0.0',
+#                     '--z',     '0.32',
+#                     '--roll',  '0.0',
+#                     '--pitch', '0.0',
+#                     '--yaw',   '0.0',
+#                     '--frame-id',       'base_footprint',
+#                     '--child-frame-id', 'camera_link'
+#         ],),
+#     ])
 
-    top_akm_dl = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_akm_dl_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.497 ', '0', '0.228','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.58', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     top_akm_dl = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_akm_dl_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             # arguments=['0.497 ', '0', '0.228','3.14', '0','0','base_footprint','laser'],),
+#             arguments=[
+#                     '--x',     '0.497',
+#                     '--y',     '0.0',
+#                     '--z',     '0.228',
+#                     '--roll',  '0.0',
+#                     '--pitch', '0.0',
+#                     '--yaw',   str(pi),
+#                     '--frame-id',       'base_footprint',
+#                     '--child-frame-id', 'laser'
+#         ],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             # arguments=['0.58', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
+#             arguments=[
+#                     '--x',     '0.58',
+#                     '--y',     '0.0',
+#                     '--z',     '0.32',
+#                     '--roll',  '0.0',
+#                     '--pitch', '0.0',
+#                     '--yaw',   '0.0',
+#                     '--frame-id',       'base_footprint',
+#                     '--child-frame-id', 'camera_link'
+#         ],),
+#     ])
 
-#mmmmmmmmmmmmmmmec
+# #mmmmmmmmmmmmmmmec
 
-    mini_mec = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mini_mec_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.048 ', '0', '0.18','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.195', '0', '0.25','3.14', '0','0','base_footprint','camera_link'],),
-    ])
+#     mini_mec = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mini_mec_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.048 ', '0', '0.18','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.195', '0', '0.25','3.14', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    senior_mec_no = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','senior_mec_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.1 ', '0', '0.165','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.18', '0', '0.3','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     senior_mec_no = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','senior_mec_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.1 ', '0', '0.165','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.18', '0', '0.3','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    senior_mec_dl = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','senior_mec_dl_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.165 ', '0', '0.235','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.255', '0', '0.35','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     senior_mec_dl = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','senior_mec_dl_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.165 ', '0', '0.235','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.255', '0', '0.35','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    top_mec_bs = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_mec_bs_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.155 ', '0', '0.195','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.24', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     top_mec_bs = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_mec_bs_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.155 ', '0', '0.195','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.24', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    top_mec_dl = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_mec_dl_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.155 ', '0', '0.195','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.24', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     top_mec_dl = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_mec_dl_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.155 ', '0', '0.195','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.24', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    senior_mec_EightDrive = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mec_EightDrive_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.207 ', '0', '0.228','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.32', '0', '0.2','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     senior_mec_EightDrive = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mec_EightDrive_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.207 ', '0', '0.228','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.32', '0', '0.2','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    top_mec_EightDrive = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mec_EightDrive_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.267  ', '0', '0.228','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.32', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
-    ])
-#oooooooooooooooooomi
+#     top_mec_EightDrive = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mec_EightDrive_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.267  ', '0', '0.228','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.32', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
+#     ])
+# #oooooooooooooooooomi
 
-    mini_omni = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mini_omni_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.0  ', '0', '0.17','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.08', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     mini_omni = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mini_omni_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.0  ', '0', '0.17','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.08', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    senior_omni = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','senior_omni_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.087  ', '0', '0.23','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.187', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     senior_omni = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','senior_omni_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.087  ', '0', '0.23','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.187', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    top_omni = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_omni_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.149  ', '0', '0.23','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.25', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     top_omni = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_omni_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.149  ', '0', '0.23','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.25', '0', '0.32','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-#dddddddddddddddddddiff
+# #dddddddddddddddddddiff
 
-    mini_tank = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mini_diff_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.02', '0', '0.155','3.1415', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.14', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     mini_tank = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mini_diff_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.02', '0', '0.155','3.1415', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.14', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    mini_4wd = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mini_diff_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.031', '0', '0.155','3.1415', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.12', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     mini_4wd = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mini_diff_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.031', '0', '0.155','3.1415', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.12', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    mini_diff = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mini_diff_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.031', '0', '0.155','3.1415', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.12', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     mini_diff = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','mini_diff_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.031', '0', '0.155','3.1415', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.12', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    top_diff = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_diff_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.087', '0', '0.195','3.1415', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.12', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     top_diff = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','top_diff_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.087', '0', '0.195','3.1415', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.12', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    four_wheel_diff_bs = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','four_wheel_diff_robot.urdf')],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.157', '0', '0.385','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.08', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
-    ])
+#     four_wheel_diff_bs = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','four_wheel_diff_robot.urdf')],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.157', '0', '0.385','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.08', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
+#     ])
 
-    four_wheel_diff_dl = GroupAction([
-        launch_ros.actions.Node(
-            package='robot_state_publisher', 
-            executable='robot_state_publisher', 
-            name='robot_state_publisher',
-            arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','four_wheel_diff_robot.urdf')],),
+#     four_wheel_diff_dl = GroupAction([
+#         launch_ros.actions.Node(
+#             package='robot_state_publisher', 
+#             executable='robot_state_publisher', 
+#             name='robot_state_publisher',
+#             arguments=[os.path.join(get_package_share_directory('wheeltec_robot_urdf'),'urdf','four_wheel_diff_robot.urdf')],),
             
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_laser',
-            arguments=['0.272', '0', '0.257','3.14', '0','0','base_footprint','laser'],),
-        launch_ros.actions.Node(
-            package='tf2_ros', 
-            executable='static_transform_publisher', 
-            name='base_to_camera',
-            arguments=['0.08', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
-    ])
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_laser',
+#             arguments=['0.272', '0', '0.257','3.14', '0','0','base_footprint','laser'],),
+#         launch_ros.actions.Node(
+#             package='tf2_ros', 
+#             executable='static_transform_publisher', 
+#             name='base_to_camera',
+#             arguments=['0.08', '0', '0.25','0', '0','0','base_footprint','camera_link'],),
+#     ])
     # Create the launch description and populate
     ld = LaunchDescription()
 
