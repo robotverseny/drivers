@@ -1,14 +1,17 @@
 /**:
     ros__parameters:
       video_device: "/dev/video0"
-      framerate: 10.0
+      framerate: 30.0
       io_method: "mmap"
       frame_id: "camera"
       pixel_format: "yuyv"
       image_width: 640
       image_height: 480
-      auto_white_balance : true
-      autoexposure : true
+      auto_white_balance : false
+      white_balance: 6500
+      autoexposure : false
+      exposure : -100
       autofocus : true
+      brightness: -1000
       camera_name: "test_camera"
       camera_info_url: "package://usb_cam_launcher/config/camera_info_a.yaml"
