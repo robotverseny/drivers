@@ -9,7 +9,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import PushRosNamespace
 import launch_ros.actions
-from launch.conditions import UnlessCondition
+from launch.conditions import UnlessCondition, IfCondition
 from launch.actions import TimerAction
 from math import pi
 
@@ -26,7 +26,13 @@ def generate_launch_description():
     
     carto_slam = LaunchConfiguration('carto_slam', default='false')
     carto_slam_dec = DeclareLaunchArgument('carto_slam',default_value='false')
-            
+    lidar_driver_start = LaunchConfiguration('lidar', default='true')
+    lidar_driver_start_dec = DeclareLaunchArgument('lidar', default_value='true')
+    cam_driver_start = LaunchConfiguration('camera', default='true')
+    cam_driver_start_dec = DeclareLaunchArgument('camera', default_value='true')
+    foxglove_start = LaunchConfiguration('foxglove', default='true')
+    foxglove_start_dec = DeclareLaunchArgument('foxglove', default_value='true')
+
     wheeltec_robot = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(launch_dir, 'base_serial.launch.py')),
             launch_arguments={'akmcar': 'true'}.items(),
@@ -38,10 +44,12 @@ def generate_launch_description():
     # lidar driver (lslidar N10)
     lslidar_driver = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(os.path.join(lidar_luanch_dir, 'lslidar_launch.py')),
+                condition=IfCondition(lidar_driver_start),
     )
 
     cam_driver = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(os.path.join(usb_cam_launcher_dir, 'launch', 'usb_cam_a.launch.py')),
+                condition=IfCondition(cam_driver_start),
     )
 
     # Steering and path visualization in RViz with TimerAction to delay starting the node by X seconds (period)
@@ -73,10 +81,10 @@ def generate_launch_description():
             arguments=[
                 '--x',     '0.0',
                 '--y',     '0.0',
-                '--z',     '0.0',
+                '--z',     '0.1',
                 '--roll',  '0.0',
                 '--pitch', '0.0',
-                '--yaw',   str(pi),
+                '--yaw',   '0.0', #-
                 '--frame-id',      'base_footprint',
                 '--child-frame-id','base_link'
             ],
@@ -159,13 +167,17 @@ def generate_launch_description():
             {'max_qos_depth': 10},
             {'num_threads': 0},
             {'use_sim_time': False},
-        ]
+        ], 
+        condition=IfCondition(foxglove_start),
     )
 
 
     ld = LaunchDescription()
 
     ld.add_action(carto_slam_dec)
+    ld.add_action(lidar_driver_start_dec)
+    ld.add_action(cam_driver_start_dec)
+    ld.add_action(foxglove_start_dec)
     ld.add_action(wheeltec_robot)
     ld.add_action(base_to_link)
     ld.add_action(base_to_gyro)
