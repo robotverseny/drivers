@@ -10,7 +10,7 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import PushRosNamespace
 import launch_ros.actions
 from launch.conditions import UnlessCondition, IfCondition
-from launch.actions import TimerAction
+from launch.actions import TimerAction, ExecuteProcess
 from math import pi
 
 
@@ -32,6 +32,8 @@ def generate_launch_description():
     cam_driver_start_dec = DeclareLaunchArgument('camera', default_value='true')
     foxglove_start = LaunchConfiguration('foxglove', default='true')
     foxglove_start_dec = DeclareLaunchArgument('foxglove', default_value='true')
+    joy_start = LaunchConfiguration('joy', default='false')
+    joy_start_dec = DeclareLaunchArgument('joy', default_value='false')
 
     wheeltec_robot = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(launch_dir, 'base_serial.launch.py')),
@@ -145,14 +147,26 @@ def generate_launch_description():
                 'max_angular_vel': 0.8,
                 'max_linear_vel': 0.5,
             }],
-                output='screen'
-            
+            output='screen',
+            condition=IfCondition(joy_start),
     )
 
     joy_node = launch_ros.actions.Node(
             package='joy', 
             executable='joy_node', 
+            parameters=[
+                {'autorepeat_rate': 10.0},
+            ], 
+            condition=IfCondition(joy_start),
     )
+
+    TimerAction (period = 2.0, actions=[ExecuteProcess(
+        cmd=['ros2','topic','pub','--once', 'cmd_vel','geometry_msgs/msg/Twist',"{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}"],
+        output='screen',)
+        ],
+        condition=IfCondition(joy_start),
+    ),
+
 
     foxglove = launch_ros.actions.Node(
         package='foxglove_bridge',
@@ -178,6 +192,7 @@ def generate_launch_description():
     ld.add_action(lidar_driver_start_dec)
     ld.add_action(cam_driver_start_dec)
     ld.add_action(foxglove_start_dec)
+    ld.add_action(joy_start_dec)
     ld.add_action(wheeltec_robot)
     ld.add_action(base_to_link)
     ld.add_action(base_to_gyro)

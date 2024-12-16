@@ -167,9 +167,9 @@ ros2 launch usb_cam_launcher usb_cam_a.launch.py
 
 All in one:
 ```r
-ros2 launch turn_on_wheeltec_robot turn_on_wheeltec_robot.launch.py lidar:=true camera:=true foxglove:=true 
+ros2 launch turn_on_wheeltec_robot turn_on_wheeltec_robot.launch.py lidar:=true camera:=true foxglove:=true joy:=false
 ```
-You can select the `lidar`, `camera`, `foxglove` with `true` or `false`.
+You can select the `lidar`, `camera`, `foxglove`, `joy` with `true` or `false`.
 
 
 
