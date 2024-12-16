@@ -70,6 +70,7 @@ def generate_launch_description():
                 {'marker_frame': 'base_link'},
                 {'pose_frame': 'base_link'},
                 {'cmd_topic': 'cmd_vel'},
+                {'path_size': 500},
                 # {'use_sim_time': False},
                 ]
             )
@@ -181,6 +182,7 @@ def generate_launch_description():
             {'max_qos_depth': 10},
             {'num_threads': 0},
             {'use_sim_time': False},
+            {'send_buffer_limit': 40000000 }, # 40MB avoiding occasional "Send buffer limit reached"
         ], 
         condition=IfCondition(foxglove_start),
     )

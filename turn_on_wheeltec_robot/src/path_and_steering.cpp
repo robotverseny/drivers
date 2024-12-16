@@ -34,8 +34,7 @@ public:
         this->declare_parameter<std::string>("marker_color", "y");
         this->declare_parameter<std::string>("cmd_topic", "cmd_vel");
         this->declare_parameter<bool>("publish_steer_marker", true);
-        this->declare_parameter<bool>("publish_kmph", true);
-        this->declare_parameter<int>("path_size", 1500);
+        this->declare_parameter<int>("path_size", 400);
 
         this->get_parameter("pose_frame", pose_frame);
         this->get_parameter("marker_frame", marker_frame);
@@ -46,15 +45,11 @@ public:
         this->get_parameter("marker_color", marker_color);
         this->get_parameter("publish_steer_marker", publish_steer_marker);
         this->get_parameter("path_size", path_size);
-        this->get_parameter("publish_kmph", publish_kmph);
 
 
         tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
         tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
-        if (publish_kmph)
-        {
-            sub_cmd_ = this->create_subscription<geometry_msgs::msg::Twist>(cmd_topic, 10, std::bind(&PathAndSteer::vehicleSteeringCallback, this, _1));
-        }
+        sub_cmd_ = this->create_subscription<geometry_msgs::msg::Twist>(cmd_topic, 10, std::bind(&PathAndSteer::vehicleSteeringCallback, this, _1));
         marker_pub = this->create_publisher<visualization_msgs::msg::Marker>(marker_topic, 20);
         path_pub = this->create_publisher<nav_msgs::msg::Path>(path_topic, 1);
         // Call loop function 20 Hz (50 milliseconds)
@@ -122,7 +117,7 @@ private:
             steer_marker.pose.orientation.y = 0.0;
             steer_marker.pose.orientation.z = 0.0;
             steer_marker.pose.orientation.w = 1.0;
-            steer_marker.scale.x = 0.6;
+            steer_marker.scale.x = 0.2;
             // https://github.com/jkk-research/colors
             if (marker_color == "r") // red
             {
@@ -166,10 +161,10 @@ private:
                 steer_marker.color.g = 0.83f;
                 steer_marker.color.b = 0.07f;
             }
-            steer_marker.color.a = 1.0;
+            steer_marker.color.a = 0.5;
             steer_marker.ns = "steering_path";
             double marker_pos_x = 0.0, marker_pos_y = 0.0, theta = 0.0;
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 20; i++)
             {
                 marker_pos_x += 0.01 * 10 * cos(theta);
                 marker_pos_y += 0.01 * 10 * sin(theta);
@@ -185,6 +180,8 @@ private:
         geometry_msgs::msg::PoseStamped pose;
 
         pose.header.stamp = this->now();
+        pose.header.frame_id = current_map;
+        path.header.frame_id = current_map;
         if ((actual_pose.pose.position.x > 0.001 || actual_pose.pose.position.x < -0.001) && !std::isnan(actual_pose.pose.position.y) && !std::isinf(actual_pose.pose.position.y))
         {
             pose.pose.position = actual_pose.pose.position;
@@ -195,7 +192,12 @@ private:
             path.poses.push_back(pose);
             path.header.stamp = this->now();
         }
-        path.poses.push_back(pose);
+        if(pose_count == 10){ // only every 10th pose to display
+            path.header.frame_id = current_map;
+            path.poses.push_back(pose);
+            pose_count = 0;
+        }
+        pose_count++;
         // keep only the last n (path_size) path message
         if (path.poses.size() > path_size)
         {
@@ -204,7 +206,10 @@ private:
         }
         if ((actual_pose.pose.position.x > 0.001 || actual_pose.pose.position.x < -0.001) && !std::isnan(actual_pose.pose.position.y) && !std::isinf(actual_pose.pose.position.y))
         {
-            path_pub->publish(path);
+            pose.header.frame_id = current_map;
+            if (path.poses.size() >= 1){
+                path_pub->publish(path);
+            }
         }
     }
     rclcpp::TimerBase::SharedPtr timer_;
@@ -215,9 +220,7 @@ private:
     double steering_angle, vehicle_speed_mps;
     long unsigned int path_size;
     bool steering_enabled;
-    bool first_run = true, publish_steer_marker, publish_kmph;
-    const double map_gyor_0_x = 697237.0, map_gyor_0_y = 5285644.0;
-    const double map_zala_0_x = 639770.0, map_zala_0_y = 5195040.0;
+    bool first_run = true, publish_steer_marker;
     std::string marker_color;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr marker_pub;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub;
@@ -226,7 +229,7 @@ private:
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
     std::string current_map = "empty";
-    int location = 0;
+    int location = 0, pose_count = 10;
 };
 
 int main(int argc, char **argv)
