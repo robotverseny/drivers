@@ -54,9 +54,8 @@ rosdep update
 cd ~/ros2_ws
 ```
 ```r
-colcon build --symlink-install --packages-select serial wheeltec_robot_msg lslidar_msgs lslidar_driver turn_on_wheeltec_robot wheeltec_robot_urdf usb_cam_launcher
+colcon build --symlink-install --packages-select serial wheeltec_robot_msg lslidar_msgs lslidar_driver turn_on_wheeltec_robot wheeltec_robot_urdf usb_cam_launcher wheeltec_py_package
 ```
-`wheeltec_py_package` do not built with this command. (further work is needed TODO)
 
 <details>
 <summary> Don't forget to source before ROS commands.</summary>

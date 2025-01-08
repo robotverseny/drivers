@@ -3,6 +3,7 @@
 #include "turn_on_wheeltec_robot/Quaternion_Solution.h"
 #include "ackermann_msgs/msg/ackermann_drive_stamped.hpp"     // CHANGE
 #include "wheeltec_robot_msg/msg/data.hpp"     // CHANGE
+#include "geometry_msgs/msg/twist_stamped.hpp"
 
 //sensor_msgs::Imu Mpu6050;//Instantiate an IMU object //实例化IMU对象 
 sensor_msgs::msg::Imu Mpu6050;
@@ -219,6 +220,11 @@ void turn_on_robot::Publish_Odom()
     robotvel.x = Robot_Vel.X;
     robotvel.y = Robot_Vel.Y;
     robotvel.z = Robot_Vel.Z;
+    // ros2 interface show geometry_msgs/msg/TwistStamped
+    geometry_msgs::msg::TwistStamped vehicle_status;
+    vehicle_status.header = odom.header;
+    vehicle_status.twist.linear.x = Robot_Vel.X;
+    vehicle_status.twist.angular.z = Robot_Vel.Z;
 
  /*   geometry_msgs::msg::TransformStamped odom_tf;
 
@@ -241,6 +247,7 @@ void turn_on_robot::Publish_Odom()
     odom_publisher->publish(odom); //Pub odometer topic //发布里程计话题
     robotpose_publisher->publish(robotpose); //Pub odometer topic //发布里程计话题
     robotvel_publisher->publish(robotvel); //Pub odometer topic //发布里程计话题
+    vehicle_status_twist_publisher->publish(vehicle_status);
 
 }
 
@@ -480,6 +487,8 @@ turn_on_robot::turn_on_robot()
   robotvel_publisher = create_publisher<wheeltec_robot_msg::msg::Data>("robotvel", 10);
   //robotvel_timer = create_wall_timer(1s/50, [=]() { Publish_Odom(); });
   tf_bro = std::make_shared<tf2_ros::TransformBroadcaster>(this);
+
+  vehicle_status_twist_publisher = create_publisher<geometry_msgs::msg::TwistStamped>("vehicle_status", 10);
 
   Cmd_Vel_Sub = create_subscription<geometry_msgs::msg::Twist>(
       cmd_vel, 100, std::bind(&turn_on_robot::Cmd_Vel_Callback, this, _1));

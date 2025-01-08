@@ -26,6 +26,8 @@
 #include <geometry_msgs/msg/pose.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
+#include "geometry_msgs/msg/twist_stamped.hpp"
+
 //#include "tf2_geometry_msgs/msg/tf2_geometry_msgs.h" /// EEEEEE
 //#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <geometry_msgs/msg/quaternion.hpp>
@@ -178,6 +180,7 @@ class turn_on_robot : public rclcpp::Node
 
                 rclcpp::Publisher<wheeltec_robot_msg::msg::Data>::SharedPtr robotpose_publisher;         // CHANGE
                 rclcpp::Publisher<wheeltec_robot_msg::msg::Data>::SharedPtr robotvel_publisher;         // CHANGE
+				rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr vehicle_status_twist_publisher;
                 rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr tf_pub_;
 
                 std::shared_ptr<tf2_ros::TransformBroadcaster> tf_bro;

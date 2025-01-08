@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'sense_hat_disp = wheeltec_py_package.sense_hat_disp:main',
         ],
     },
 )
