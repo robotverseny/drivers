@@ -1,0 +1,10 @@
+<!--
+rosparam set joy_node/dev "/dev/input/js0"
+-->
+<launch>
+    <node pkg="joy" type="joy_node" name="joy_node_for_game_pad" output="screen">
+        <param name="dev" type="string" value="/dev/input/js1" />
+        <param name="deadzone" type="double" value="0.004" />
+    </node>
+    <node pkg="udp_joystick_ros" type="wheel_control_vehicle.py" name="logitech_control_vehicle_wheel" output="screen"/>
+</launch>
