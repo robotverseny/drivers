@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
 import socket
-import rospy
-import geometry_msgs.msg as geomsg
-import autoware_msgs.msg as auwmsg
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import Twist
+#import autoware_msgs.msg as auwmsg
 import numpy as np
-import time
+from rclpy.qos import QoSProfile
+from rclpy.time import Time
+from std_msgs.msg import Float32
 import threading
 
 class UdpJoystickServer:
@@ -62,22 +65,36 @@ class UdpJoystickServer:
     def get_controller_state_ref(self):
         return self.controller_state
 
-if __name__ == "__main__":
+def main():
+    rclpy.init()
+    global NODE
+    global PUBLISHER
+    qos = QoSProfile(depth=10)
+    NODE = rclpy.create_node('udp_control')
+    PUBLISHER = NODE.create_publisher(Twist,'/ctrl_cmd', qos)
+    NODE.create_subscription(Twist,'cmd_vel',cmd_callback,qos)
+    rclpy.spin(NODE)
+    NODE.destroy_node()
+    rclpy.shutdown()
 
-    rospy.init_node("udp_control", disable_signals=True)
-    try:
-        port = rospy.get_param("udp_control/udp_port")
-    except:
-        port = 50505
-    try:
-        server = UdpJoystickServer(port)
-        rospy.loginfo("Starting server... Port: " + str(port))
-        server.start_server()
+
+    #rospy.init_node("udp_control", disable_signals=True)
+    #try:
+    #    port = rospy.get_param("udp_control/udp_port")
+    #except:
+    #    port = 50505
+    #try:
+    #    server = UdpJoystickServer(port)
+    #    rospy.loginfo("Starting server... Port: " + str(port))
+    #    server.start_server()
         #controller_ref = server.get_controller_state_ref()
-        while True:
-            time.sleep(1)
-    except ValueError:    
-        rospy.logerr("Invalid port input, exiting...")
-    except KeyboardInterrupt:   
-        server.stop_server()
-        rospy.loginfo("Shutting down ros node...")
+    #    while True:
+    #        time.sleep(1)
+    #except ValueError:    
+    #    rospy.logerr("Invalid port input, exiting...")
+    #except KeyboardInterrupt:   
+    #    server.stop_server()
+    #    rospy.loginfo("Shutting down ros node...")
+if __name__ == "__main__":
+    main()
+
