@@ -17,8 +17,10 @@ class UdpJoystickServer:
     def __init__(self, port):
         self.port = port
         self.controller_state = self.start_controller_state
-        self.pub_tw = rospy.Publisher("ctrl_cmd", auwmsg.ControlCommandStamped, queue_size=10)
-        rospy.loginfo("Publishing ctrl_cmd [autoware_msgs/ControlCommandStamped]")
+        # self.pub_tw = rospy.Publisher("ctrl_cmd", auwmsg.ControlCommandStamped, queue_size=10)
+        self.pub_tw = PUBLISHER
+        # rospy.loginfo("Publishing ctrl_cmd [autoware_msgs/ControlCommandStamped]")
+        print("Publishing cmd_vel [geometry_msgs/msg/Twist]")
 
     def start_server(self):
         thread = threading.Thread(target = self.recieve_msgs)
@@ -38,7 +40,8 @@ class UdpJoystickServer:
         #s[4:8]
         #s[8:12]
         #s[12:16]
-        msg_aw = auwmsg.ControlCommandStamped()
+        # msg_aw = auwmsg.ControlCommandStamped()
+        # msg_twist = Twist()
         cnt = 1500
         div = 500
         multiply = 1.0
@@ -52,49 +55,72 @@ class UdpJoystickServer:
                         m3 = (float(str(msg)[8:12])  - cnt) / div * multiply
                         m4 = (float(str(msg)[12:16]) - cnt) / div * multiply
                         self.controller_state = np.array([m1, m2, m3, m4])
-                        msg_aw.cmd.linear_velocity = m4 * -20
-                        msg_aw.cmd.steering_angle = m3 * -0.5
-                        self.pub_tw.publish(msg_aw)
+                        # msg_aw.cmd.linear_velocity = m4 * -20
+                        # msg_aw.cmd.steering_angle = m3 * -0.5
+                        # self.pub_tw.publish(msg_aw)
+                        # self.pub_tw.publish(msg_twist)
                         #rospy.loginfo(self.controller_state)
+                        print(str(self.controller_state))
                     except (SyntaxError,ValueError):
-                        rospy.logerr("Malformed UDP msg to controller server")
+                        # rospy.logerr("Malformed UDP msg to controller server")
+                        print("Malformed UDP msg to controller server")
                 except socket.timeout:
-                    rospy.logwarn("Didn't receive command before timeout, listening again")
+                    # rospy.logwarn("Didn't receive command before timeout, listening again")
+                    print("Didn't receive command before timeout, listening again")
         sock.close()
 
     def get_controller_state_ref(self):
         return self.controller_state
 
+def cmd_callback(data):
+    msg_twist = Twist()
+    msg_twist.linear.x = 0
+    msg_twist.linear.y = 0
+    msg_twist.linear.z = 0
+    msg_twist.angular.x = 0
+    msg_twist.angular.y = 0
+    msg_twist.angular.z = 0
+    PUBLISHER.publish(msg_twist)
+
 def main():
     rclpy.init()
     global NODE
     global PUBLISHER
-    qos = QoSProfile(depth=10)
-    NODE = rclpy.create_node('udp_control')
-    PUBLISHER = NODE.create_publisher(Twist,'/ctrl_cmd', qos)
-    NODE.create_subscription(Twist,'cmd_vel',cmd_callback,qos)
-    rclpy.spin(NODE)
-    NODE.destroy_node()
-    rclpy.shutdown()
-
-
+    
     #rospy.init_node("udp_control", disable_signals=True)
+    NODE = rclpy.create_node('udp_control')
+    qos = QoSProfile(depth=10)
+    PUBLISHER = NODE.create_publisher(Twist,'/cmd_vel', qos)
+    
     #try:
     #    port = rospy.get_param("udp_control/udp_port")
     #except:
     #    port = 50505
-    #try:
-    #    server = UdpJoystickServer(port)
-    #    rospy.loginfo("Starting server... Port: " + str(port))
-    #    server.start_server()
-        #controller_ref = server.get_controller_state_ref()
-    #    while True:
-    #        time.sleep(1)
-    #except ValueError:    
-    #    rospy.logerr("Invalid port input, exiting...")
-    #except KeyboardInterrupt:   
-    #    server.stop_server()
-    #    rospy.loginfo("Shutting down ros node...")
+    port = 50505
+    
+    PUBLISHER = NODE.create_publisher(Twist,'/ctrl_cmd', qos)
+    NODE.create_subscription(Twist,'cmd_vel',cmd_callback,qos)
+    
+    try:
+        server = UdpJoystickServer(port)
+        # rospy.loginfo("Starting server... Port: " + str(port))
+        print("Starting server... Port: " + str(port))
+        server.start_server()
+        controller_ref = server.get_controller_state_ref()
+        while True:
+            time.sleep(1)
+    except ValueError:    
+        # rospy.logerr("Invalid port input, exiting...")
+        print("Invalid port input, exiting...")
+    except KeyboardInterrupt:   
+        server.stop_server()
+        # rospy.loginfo("Shutting down ros node...")
+        print("Shutting down ros node...")
+
+    rclpy.spin(NODE)
+    NODE.destroy_node()
+    rclpy.shutdown()
+
 if __name__ == "__main__":
     main()
 
