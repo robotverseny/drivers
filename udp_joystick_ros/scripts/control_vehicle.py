@@ -108,7 +108,7 @@ def main():
         server.start_server()
         controller_ref = server.get_controller_state_ref()
         while True:
-            time.sleep(1)
+            Time.sleep(1)
     except ValueError:    
         # rospy.logerr("Invalid port input, exiting...")
         print("Invalid port input, exiting...")
