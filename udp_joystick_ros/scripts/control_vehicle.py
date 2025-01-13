@@ -49,10 +49,10 @@ class UdpJoystickServer:
                 try:
                     msg, _ = sock.recvfrom(1024)
                     print("Msg: " + str(msg))
-                    print(str(msg)[2:5]))
-                    print(str(msg)[6:9]))
-                    print(str(msg)[10:13]))
-                    print(str(msg)[14:17))]
+                    print(str(msg)[2:5])
+                    print(str(msg)[6:9])
+                    print(str(msg)[10:13])
+                    print(str(msg)[14:17])
                     try:
                         m1 = (float(str(msg)[2:5])   - cnt) / div * multiply
                         m2 = (float(str(msg)[6:9])   - cnt) / div * multiply
