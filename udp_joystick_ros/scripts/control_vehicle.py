@@ -36,10 +36,10 @@ class UdpJoystickServer:
         sock.bind(('',self.port))
         sock.settimeout(1.0)
         s = "2000100014991500"
-        s[0:4]
-        s[4:8]
-        s[8:12]
-        s[12:16]
+        s[0:3]
+        s[4:7]
+        s[8:11]
+        s[12:15]
         # msg_aw = auwmsg.ControlCommandStamped()
         # msg_twist = Twist()
         cnt = 1500
@@ -50,10 +50,10 @@ class UdpJoystickServer:
                     msg, _ = sock.recvfrom(1024)
                     print("Msg: " + str(msg))
                     try:
-                        m1 = (float(str(msg)[0:4])   - cnt) / div * multiply
-                        m2 = (float(str(msg)[4:8])   - cnt) / div * multiply
-                        m3 = (float(str(msg)[8:12])  - cnt) / div * multiply
-                        m4 = (float(str(msg)[12:16]) - cnt) / div * multiply
+                        m1 = (float(str(msg)[0:3])   - cnt) / div * multiply
+                        m2 = (float(str(msg)[4:7])   - cnt) / div * multiply
+                        m3 = (float(str(msg)[8:11])  - cnt) / div * multiply
+                        m4 = (float(str(msg)[12:15]) - cnt) / div * multiply
                         self.controller_state = np.array([m1, m2, m3, m4])
                         # msg_aw.cmd.linear_velocity = m4 * -20
                         # msg_aw.cmd.steering_angle = m3 * -0.5
