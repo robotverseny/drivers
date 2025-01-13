@@ -35,11 +35,11 @@ class UdpJoystickServer:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(('',self.port))
         sock.settimeout(1.0)
-        #s = "2000100014991500"
-        #s[0:4]
-        #s[4:8]
-        #s[8:12]
-        #s[12:16]
+        s = "2000100014991500"
+        s[0:4]
+        s[4:8]
+        s[8:12]
+        s[12:16]
         # msg_aw = auwmsg.ControlCommandStamped()
         # msg_twist = Twist()
         cnt = 1500
@@ -48,7 +48,7 @@ class UdpJoystickServer:
         while(not self._stop.isSet()):
                 try:
                     msg, _ = sock.recvfrom(1024)
-                    #print("Msg: " + str(msg))
+                    print("Msg: " + str(msg))
                     try:
                         m1 = (float(str(msg)[0:4])   - cnt) / div * multiply
                         m2 = (float(str(msg)[4:8])   - cnt) / div * multiply
