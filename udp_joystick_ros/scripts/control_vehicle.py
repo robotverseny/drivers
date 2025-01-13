@@ -49,11 +49,15 @@ class UdpJoystickServer:
                 try:
                     msg, _ = sock.recvfrom(1024)
                     print("Msg: " + str(msg))
+                    print(str(msg)[2:5]))
+                    print(str(msg)[6:9]))
+                    print(str(msg)[10:13]))
+                    print(str(msg)[14:17))]
                     try:
-                        m1 = (float(str(msg)[0:3])   - cnt) / div * multiply
-                        m2 = (float(str(msg)[4:7])   - cnt) / div * multiply
-                        m3 = (float(str(msg)[8:11])  - cnt) / div * multiply
-                        m4 = (float(str(msg)[12:15]) - cnt) / div * multiply
+                        m1 = (float(str(msg)[2:5])   - cnt) / div * multiply
+                        m2 = (float(str(msg)[6:9])   - cnt) / div * multiply
+                        m3 = (float(str(msg)[10:13])  - cnt) / div * multiply
+                        m4 = (float(str(msg)[14:17]) - cnt) / div * multiply
                         self.controller_state = np.array([m1, m2, m3, m4])
                         # msg_aw.cmd.linear_velocity = m4 * -20
                         # msg_aw.cmd.steering_angle = m3 * -0.5
