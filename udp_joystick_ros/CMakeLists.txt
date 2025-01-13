@@ -61,41 +61,25 @@ include_directories(
   ${tf2_geometry_msgs_INCLUDE_DIRS}
   ${geometry_msgs_INCLUDE_DIRS}
 )
-set(wheeltec_robot_node_SRCS
-  src/wheeltec_robot.cpp
-  src/Quaternion_Solution.cpp
-)
 
-add_executable(wheeltec_robot_node src/wheeltec_robot.cpp src/Quaternion_Solution.cpp)
-ament_target_dependencies(wheeltec_robot_node tf2_ros tf2 tf2_geometry_msgs rclcpp std_msgs nav_msgs std_srvs sensor_msgs ackermann_msgs serial wheeltec_robot_msg)
+# set(udp_joystick_ros_node_SRCS
+#  src/udp_joystick_ros.cpp
+# )
 
-add_executable(parameter_node src/cpp_parameters_node.cpp)
-ament_target_dependencies(parameter_node rclcpp)
+# add_executable(udp_joystick_ros_node src/udp_joystick_ros_node.cpp)
+# ament_target_dependencies(udp_joystick_ros_node tf2_ros tf2 tf2_geometry_msgs rclcpp std_msgs nav_msgs std_srvs sensor_msgs ackermann_msgs serial wheeltec_robot_msg)
 
-add_executable(cmd_vel_to_ackermann src/cmd_vel_to_ackermann.cpp)
-ament_target_dependencies(cmd_vel_to_ackermann rclcpp std_msgs geometry_msgs ackermann_msgs)
+# install(TARGETS
+# udp_joystick_ros_node
 
-add_executable(joy_to_cmd src/joy_to_cmd.cpp)
-ament_target_dependencies(joy_to_cmd rclcpp std_msgs sensor_msgs geometry_msgs)
+# DESTINATION lib/${PROJECT_NAME}
+# ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+# LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+# RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
-add_executable(path_and_steering src/path_and_steering.cpp)
-ament_target_dependencies(path_and_steering rclcpp std_msgs sensor_msgs geometry_msgs nav_msgs visualization_msgs tf2 tf2_ros tf2_geometry_msgs)
-
-install(TARGETS
-wheeltec_robot_node
-parameter_node
-cmd_vel_to_ackermann
-joy_to_cmd
-path_and_steering
-
-DESTINATION lib/${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-install(
-  DIRECTORY launch config
-  DESTINATION share/${PROJECT_NAME}
-)
+# install(
+# DIRECTORY launch config
+# DESTINATION share/${PROJECT_NAME}
+# )
 ament_package()
