@@ -7,7 +7,7 @@ from geometry_msgs.msg import Twist
 #import autoware_msgs.msg as auwmsg
 import numpy as np
 from rclpy.qos import QoSProfile
-from rclpy.time import Time
+import time
 from std_msgs.msg import Float32
 import threading
 
@@ -108,7 +108,7 @@ def main():
         server.start_server()
         controller_ref = server.get_controller_state_ref()
         while True:
-            Time.sleep(1)
+            time.sleep(1)
     except ValueError:    
         # rospy.logerr("Invalid port input, exiting...")
         print("Invalid port input, exiting...")
