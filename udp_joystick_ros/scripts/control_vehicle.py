@@ -61,8 +61,10 @@ class UdpJoystickServer:
                         m3 = (float(str(msg)[10:14])  - cnt) / div * multiply
                         m4 = (float(str(msg)[14:18]) - cnt) / div * multiply
                         self.controller_state = np.array([m1, m2, m3, m4])
-                        linear_velocity = (float(m4 * -20))
-                        steering_angle = (float(m3 * -0.5))
+                        print(str(float(m4)))
+                        print(str(float(m3)))
+                        linear_velocity = (float(m4))
+                        steering_angle = (float(m3))
 
                         msg_twist.linear.x = linear_velocity
                         msg_twist.angular.z = steering_angle
