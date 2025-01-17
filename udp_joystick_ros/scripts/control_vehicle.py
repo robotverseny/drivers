@@ -41,10 +41,12 @@ class UdpJoystickServer:
         s[8:11]
         s[12:15]
         # msg_aw = auwmsg.ControlCommandStamped()
-        # msg_twist = Twist()
+        msg_twist = Twist()
         cnt = 1500
         div = 500
         multiply = 1.0
+        linear_velocity = 0
+        streering_angle = 0
         while(not self._stop.isSet()):
                 try:
                     msg, _ = sock.recvfrom(1024)
@@ -59,10 +61,18 @@ class UdpJoystickServer:
                         m3 = (float(str(msg)[10:14])  - cnt) / div * multiply
                         m4 = (float(str(msg)[14:18]) - cnt) / div * multiply
                         self.controller_state = np.array([m1, m2, m3, m4])
-                        # msg_aw.cmd.linear_velocity = m4 * -20
-                        # msg_aw.cmd.steering_angle = m3 * -0.5
+                        linear_velocity = m4 * -20
+                        steering_angle = m3 * -0.5
+
+                        msg_twist.linear.x = linear_velocity
+                        msg_twist.linear.y = 0
+                        msg_twist.linear.z = 0
+                        msg_twist.angular.x = 0
+                        msg_twist.angular.y = 0
+                        msg_twist.angular.z = steering_angle
+                        
                         # self.pub_tw.publish(msg_aw)
-                        # self.pub_tw.publish(msg_twist)
+                        self.pub_tw.publish(msg_twist)
                         #rospy.loginfo(self.controller_state)
                         print(str(self.controller_state))
                     except (SyntaxError,ValueError):
@@ -76,15 +86,15 @@ class UdpJoystickServer:
     def get_controller_state_ref(self):
         return self.controller_state
 
-def cmd_callback(data):
-    msg_twist = Twist()
-    msg_twist.linear.x = 0
-    msg_twist.linear.y = 0
-    msg_twist.linear.z = 0
-    msg_twist.angular.x = 0
-    msg_twist.angular.y = 0
-    msg_twist.angular.z = 0
-    PUBLISHER.publish(msg_twist)
+# def cmd_callback(data):
+#    msg_twist = Twist()
+#    msg_twist.linear.x = 0
+#    msg_twist.linear.y = 0
+#    msg_twist.linear.z = 0
+#    msg_twist.angular.x = 0
+#    msg_twist.angular.y = 0
+#    msg_twist.angular.z = 0
+#    PUBLISHER.publish(msg_twist)
 
 def main():
     rclpy.init()
@@ -94,7 +104,6 @@ def main():
     #rospy.init_node("udp_control", disable_signals=True)
     NODE = rclpy.create_node('udp_control')
     qos = QoSProfile(depth=10)
-    PUBLISHER = NODE.create_publisher(Twist,'/cmd_vel', qos)
     
     #try:
     #    port = rospy.get_param("udp_control/udp_port")
@@ -102,8 +111,8 @@ def main():
     #    port = 50505
     port = 50505
     
-    PUBLISHER = NODE.create_publisher(Twist,'/ctrl_cmd', qos)
-    NODE.create_subscription(Twist,'cmd_vel',cmd_callback,qos)
+    PUBLISHER = NODE.create_publisher(Twist,'cmd_vel', qos)
+    # NODE.create_subscription(Twist,'cmd_vel',cmd_callback,qos)
     
     try:
         server = UdpJoystickServer(port)
