@@ -1,0 +1,21 @@
+<!--
+rosparam set joy_node/dev "/dev/input/js0"
+-->
+<launch>
+<group ns="wheel">
+    <node pkg="joy" type="joy_node" name="joy_node_for_game_pad" output="screen">
+        <param name="dev" type="string" value="/dev/input/js1" />
+        <param name="deadzone" type="double" value="0.0004" />
+    </node>
+</group>
+
+<group ns="pedal">
+    <node pkg="joy" type="joy_node" name="joy_node_for_game_pad" output="screen">
+        <param name="dev" type="string" value="/dev/input/js0" />
+        <param name="deadzone" type="double" value="0.002" />
+    </node>
+</group>
+
+
+    <node pkg="udp_joystick_ros" type="fanatec_control.py" name="fanatec_control_vehicle_wheel" output="screen"/>
+</launch>
